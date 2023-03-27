@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: PhoneBook
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: phonebook
+
+server:
+  port: 8081
+#  Mysql Confi
+

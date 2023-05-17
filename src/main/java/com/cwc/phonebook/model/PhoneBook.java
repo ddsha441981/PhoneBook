@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 @Document
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,7 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Builder
 
-public class PhoneBook {
+public class PhoneBook implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     @Id
     @CsvBindByPosition(position = 0)
     private String phoneBookId;

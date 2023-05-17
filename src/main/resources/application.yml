@@ -1,13 +1,29 @@
-spring:
-  application:
-    name: PhoneBook
-
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      database: phonebook
-
-server:
-  port: 8081
-#  Mysql Confi
-
+#spring:
+#  application:
+#    name: PhoneBook
+#
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017
+#      database: phonebook
+#  redis:
+#    host: redis-12168.c301.ap-south-1-1.ec2.cloud.redislabs.com
+#    password: F9cXmZBGRRA3tzyvj4og3zSBGLGJ4STf
+#    username: default
+#    port: 12168
+#  cache:
+#    type: redis
+#
+#server:
+#  port: 8081
+#
+#
+##  Command
+##  keytool -genkey -alias spring-https-example -storetype JKS -keyalg RSA -keysize 2048 -validity 360 -keystore spring-https-phonebook.jks
+##SSL Certificate
+##  ssl:
+##    key-alias: PhoneBook
+##    key-store-type: JKS
+##    key-password: password
+##    key-store: classpath:spring-https-phonebook.jks
+#

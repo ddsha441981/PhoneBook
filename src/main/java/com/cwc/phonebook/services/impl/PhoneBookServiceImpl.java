@@ -11,6 +11,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +34,11 @@ public class PhoneBookServiceImpl implements PhoneBookService {
         //unique PhoneBookId
         String phoneBookId = UUID.randomUUID().toString();
         phoneBook.setPhoneBookId(phoneBookId);
-        PhoneBook savedContact = phoneBookRepository.save(phoneBook);
-        return savedContact;
+        return phoneBookRepository.save(phoneBook);
     }
 
     @Override
+    @CacheEvict(value = "phonebook", key = "#phoneBook.phoneBookId")
     public PhoneBook updateContact(String phoneBookId, PhoneBook phoneBook) {
         PhoneBook phoneBookIds = phoneBookRepository.findById(phoneBookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Id not found with this phoneId"));
@@ -49,25 +52,33 @@ public class PhoneBookServiceImpl implements PhoneBookService {
     }
 
     @Override
+    @Cacheable(value = "phonebook",key = "#phoneBookId")
     public PhoneBook getPhoneBookById(String phoneBookId) {
         return phoneBookRepository.findById(phoneBookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Id not found with this phoneId"));
     }
 
     @Override
+    @Cacheable("phonebooks")
     public List<PhoneBook> getAllContacts() {
         return phoneBookRepository.findAll();
     }
 
     @Override
+    @CacheEvict(value = "phonebook",key = "#phoneBookId")
     public void deleteContactById(String phoneBookId) {
         phoneBookRepository.deleteById(phoneBookId);
     }
 
     @Override
+    @CacheEvict(value = {"phonebooks","phonebook"},allEntries = true)
+    public void deleteContactAll() {
+        this.phoneBookRepository.deleteAll();
+    }
+
+    @Override
     public Long countContacts() {
-        long count = phoneBookRepository.count();
-        return count;
+        return phoneBookRepository.count();
     }
 
     @Override

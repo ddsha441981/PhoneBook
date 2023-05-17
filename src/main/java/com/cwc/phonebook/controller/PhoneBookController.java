@@ -10,6 +10,7 @@ import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,18 +28,22 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/contacts")
+@RequestMapping("/api/contacts")
 public class PhoneBookController {
+
+    //ResponseEntity not support serialization
+
     @Autowired
     private PhoneBookService phoneBookService;
 
-    @PostMapping("/save")
-    private ResponseEntity<?> addContact(@RequestBody PhoneBook phoneBook){
+
+    @PostMapping("/")
+    public ResponseEntity<?> addContact(@RequestBody PhoneBook phoneBook){
         PhoneBook savedContacts = phoneBookService.addContacts(phoneBook);
         return new ResponseEntity<>(savedContacts,HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{phoneBookId}")
+    @PutMapping("/{phoneBookId}")
     public ResponseEntity<?> updateContacts(@PathVariable("phoneBookId") String phoneBookId, @RequestBody PhoneBook phoneBook) {
         PhoneBook updatedContact =  null;
         if (!phoneBookId.isEmpty()) {
@@ -50,6 +55,16 @@ public class PhoneBookController {
         return new ResponseEntity<>(updatedContact, HttpStatus.OK);
     }
 
+    //ResponseEntity not support serialization
+//    @Cacheable(value = "contacts",key = "#phoneBookId")
+//    @GetMapping("/{phoneBookId}")
+//    public PhoneBook getContactById(@PathVariable("phoneBookId") String phoneBookId){
+//        PhoneBook phoneBookById = phoneBookService.getPhoneBookById(phoneBookId);
+//        if (phoneBookById == null)throw new ResourceNotFoundException("Id not found with this id Controller");
+//        return phoneBookById;
+//    }
+
+//
     @GetMapping("/{phoneBookId}")
     public ResponseEntity<?> getContactById(@PathVariable("phoneBookId") String phoneBookId){
         PhoneBook phoneBookById = phoneBookService.getPhoneBookById(phoneBookId);
@@ -67,6 +82,12 @@ public class PhoneBookController {
     public ResponseEntity<?> deleteContacts(@PathVariable("phoneBookId") String phoneBookId){
          phoneBookService.deleteContactById(phoneBookId);
         return new ResponseEntity<>("Contact deleted..." ,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/")
+    public ResponseEntity<?> deleteAll(){
+        phoneBookService.deleteContactAll();
+        return new ResponseEntity<>("All Contact deleted...",HttpStatus.OK);
     }
 
     @GetMapping("/count")

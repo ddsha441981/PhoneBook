@@ -18,6 +18,7 @@ public interface PhoneBookService {
     public List<PhoneBook> getAllContacts();
     // delete
     public void deleteContactById(String phoneBookId);
+    public void deleteContactAll();
 
     //business methods
     public Long countContacts();
